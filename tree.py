@@ -7,7 +7,7 @@ from methods import *
 
 
 class Web_element:
-    def __init__(self, id, x, y, height, width, parent_id, children_ids, xpath, back_color, color):
+    def __init__(self, id, x, y, height, width, parent_id, children_ids, xpath, back_color, color, square_num):
         self.id = id
         self.x = x
         self.y = y
@@ -18,6 +18,7 @@ class Web_element:
         self.xpath = xpath
         self.back_color = back_color
         self.color = color
+        self.square_num = square_num
 
 
 #Количество детей у элемента дерева
@@ -71,9 +72,29 @@ def change_to_id(list):
     return out
 
 
-def create_my_tree(tree, url, height, width):
+def divide_screen(screen_width, screen_height, num_x,num_y,x,y, width, height):
+    squares = []
+    square_length_x = round(screen_width / num_x)
+    square_length_y = round(screen_height / num_y)
+    squares.append((x // square_length_x) + 1 + (y // square_length_y) * num_x)
+    ostatok_x = squares[0]*square_length_x - x
+    ostatok_y = (squares[0]//num_x + 1)*square_length_y - y
+    if (width > ostatok_x):
+        num_scrs = 1 + (width-ostatok_x)//square_length_x
+        for i in range(num_scrs):
+            squares.append(squares[0] + i)
+
+    if (height > ostatok_y):
+        num_scrs = 1 + (height - ostatok_y)//square_length_y
+        for i in range(num_scrs):
+            squares.append(squares[0] + i*num_x)
+
+    return squares
+
+
+def create_my_tree(tree, url, height_scr, width_scr, num_x, num_y):
     driver = webdriver.Firefox()
-    driver.set_window_size(height, width)
+    driver.set_window_size(height_scr, width_scr)
     driver.get(url)
     Web_elements = []
     for e in tree.iter():
@@ -89,9 +110,10 @@ def create_my_tree(tree, url, height, width):
                 width = element.size['width']
                 back_color = element.value_of_css_property('background-color')
                 color = element.value_of_css_property('color')
-                if not bad_position(x,y,height,width):
-                    Web_elements.append(Web_element(id(e), x, y, height, width, id(e.getparent()),
-                                                                        change_to_id(e.getchildren()), xpath, back_color, color))
+                if not bad_position(x,y,height,width) and element.is_displayed():
+                    square_id = divide_screen(width_scr, height_scr, num_x, num_y, x, y, width, height)
+                    Web_elements.append(Web_element(id(e), x, y, width, height, id(e.getparent()),
+                                                     change_to_id(e.getchildren()), xpath, back_color, color, square_id))
             except:
                 pass
     return Web_elements

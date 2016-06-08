@@ -78,7 +78,47 @@ def colors_check(element):
         print(element.xpath + 'очень плохие цвета ' + str(colour_diff))
 
 
+def if_intersection(el1,el2):
+    el1_x1 = el1.x
+    el1_y1 = el1.y
+    el1_x2 = el1.x + el1.width
+    el1_y2 = el1.y + el1.height
 
+    el2_x1 = el2.x
+    el2_y1 = el2.y
+    el2_x2 = el2.x + el2.width
+    el2_y2 = el2.y + el2.height
+
+
+    if ((el1_y1 > el2_y2) or (el1_y2 < el2_y1) or (el1_x1 > el2_x2) or (el1_x2 < el2_x1)): #or  is_in_spisok(el1.parent_id,el2.children_ids) or is_in_spisok(el2.parent_id,el1.children_ids)):
+        return 'OK'
+    else:
+        return el1.xpath
+
+
+def is_in_spisok(parent,children):
+    for el in children:
+        if (parent == el):
+            return True
+        else:
+            return False
+
+
+def spisok_intersect(s1,s2):
+    for e1 in s1:
+        for e2 in s2:
+            if (e1 == e2):
+                return True
+    return False
+
+
+def test_intersection(tr):
+    for el1 in tr:
+        for el2 in tr:
+            if (spisok_intersect(el1.square_num,el2.square_num) ) :#and el1.parent_id == el2.parent_id and el1 != el2):
+                test = if_intersection(el1,el2)
+
+    return 'kek'
 
 
 
