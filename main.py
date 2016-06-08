@@ -7,6 +7,20 @@ from selenium.webdriver.common.action_chains import ActionChains
 from tree import *
 from bottle import route, run, template, static_file, error, get, post, request
 
+from bottle import route, run, template, static_file, error, get, post, request
+@route('/static/<filename>')
+def server_static(filename):
+    return static_file(filename, root='/home/spartalex/python/web_testing/static')
+
+
+@route('/images/<filename>')
+def server_static(filename):
+    return static_file(filename, root='/home/spartalex/python/web_testing/images')
+
+@route('/test/<name>')
+def index(name):
+    return template('template_test_site', xpath='xpath')
+
 
 @post('/dom_created')
 def do():
@@ -16,12 +30,13 @@ def do():
     # К элементам дерева добавляем их xpath-селекторы
     add_xpath(tree)
     tr = []
-    tr = create_my_tree(tree, url, 1200, 700)
+    tr = create_my_tree(tree, url, 1200, 700, 10, 5)
 
     # for e in tr:
     #    if (e.color != 'transparent') and (e.back_color != 'transparent'):
     #        colors_check(e)
     # print('f')
+    test_intersection(tr)
 
     return template('dom_created',xpath = tr[3].xpath)
 
