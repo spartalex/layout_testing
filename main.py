@@ -30,7 +30,7 @@ def do():
     # К элементам дерева добавляем их xpath-селекторы
     add_xpath(tree)
     tr = []
-    tr = create_my_tree(tree, url, 1200, 700, 10, 5)
+    tr = create_my_tree(tree, url, 200, 700, 10, 5)
 
     # for e in tr:
     #    if (e.color != 'transparent') and (e.back_color != 'transparent'):
@@ -38,7 +38,7 @@ def do():
     # print('f')
     test_intersection(tr)
 
-    return template('dom_created',xpath = tr[3].xpath)
+    return template('dom_created',xpath = tr[0].xpath)
 
 # конроллер возвращает картинку, сохраненную при поиске
 @route('/hello/<name>')
