@@ -43,7 +43,7 @@ def bad_position(x, y, height, width):
 #Откидываем плохие xpath
 def bad_xpath(e):
     #if ('div' in e.text[-6:]):
-    if (e.find('div',-6) != -1):
+    if (e.find('div',-6) != -1) or (e.find('body',-6) != -1):
         return True
     else:
         return False
@@ -72,6 +72,14 @@ def change_to_id(list):
     return out
 
 
+def normalize_parent_id(tr):
+    for e in tr:
+        if (len(e.children_ids) > 0):
+            for el in e.children_ids:
+                for elem in tr:
+                    if (elem.id == el):
+                        elem.parent_id = e.id
+
 def divide_screen(screen_width, screen_height, num_x,num_y,x,y, width, height):
     squares = []
     square_length_x = round(screen_width / num_x)
@@ -96,6 +104,7 @@ def create_my_tree(tree, url, height_scr, width_scr, num_x, num_y):
     driver = webdriver.Firefox()
     driver.set_window_size(height_scr, width_scr)
     driver.get(url)
+    driver.save_screenshot('screenie.png')
     Web_elements = []
     for e in tree.iter():
         #prms = get_parameters_of_element(e)
@@ -116,6 +125,7 @@ def create_my_tree(tree, url, height_scr, width_scr, num_x, num_y):
                                                      change_to_id(e.getchildren()), xpath, back_color, color, square_id))
             except:
                 pass
+    normalize_parent_id(Web_elements)
     return Web_elements
 
 
